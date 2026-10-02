@@ -1,0 +1,164 @@
+{%- comment -%} Pitriciacle · Hero — cinematic full-bleed editorial hero {%- endcomment -%}
+
+{%- liquid
+  assign hero_h = '78vh'
+  if section.settings.height == 'small'
+    assign hero_h = '56vh'
+  elsif section.settings.height == 'large'
+    assign hero_h = '94vh'
+  elsif section.settings.height == 'full'
+    assign hero_h = '100svh'
+  endif
+  assign hero_align = section.settings.alignment | default: 'left'
+  assign shade_o = section.settings.overlay_opacity | default: 85 | divided_by: 100.0
+  assign hero_lines = section.settings.heading | default: 'Objects of quiet grandeur' | split: '|'
+-%}
+
+<style>
+  #shopify-section-{{ section.id }} .hero { position: relative; display: flex; align-items: flex-end; min-height: {{ hero_h }}; overflow: hidden; background: var(--pt-sand); }
+  #shopify-section-{{ section.id }} .hero__media { position: absolute; inset: 0; }
+  #shopify-section-{{ section.id }} .hero__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #shopify-section-{{ section.id }} .hero__shade { position: absolute; inset: 0; opacity: {{ shade_o }}; background: linear-gradient(to top, rgba(24,19,14,0.62) 0%, rgba(24,19,14,0.16) 52%, rgba(24,19,14,0.05) 100%); }
+  #shopify-section-{{ section.id }} .hero__content { position: relative; z-index: 1; width: 100%; padding-top: 10rem; padding-bottom: 7rem; color: var(--pt-porcelain); }
+  #shopify-section-{{ section.id }} .hero--center .hero__content { text-align: center; }
+  #shopify-section-{{ section.id }} .hero__kicker { color: var(--pt-champagne); opacity: 0; animation: pt-hero-fade 1.2s var(--pt-ease) 0.25s forwards; }
+  #shopify-section-{{ section.id }} .hero__title { color: var(--pt-porcelain); margin: 1.4rem 0 0; font-family: var(--pt-serif); font-weight: 400; font-size: clamp(3.4rem, 8.5vw, 8.2rem); line-height: 1.03; letter-spacing: 0.01em; max-width: 16ch; }
+  #shopify-section-{{ section.id }} .hero--center .hero__title { margin-left: auto; margin-right: auto; }
+  #shopify-section-{{ section.id }} .hero__title .hero__accent { font-style: italic; font-weight: 300; color: var(--pt-champagne); }
+  #shopify-section-{{ section.id }} .hero__sub { margin: 1.8rem 0 0; max-width: 46ch; font-size: 1.7rem; line-height: 1.65; color: rgba(250,248,244,0.88); font-weight: 300; opacity: 0; animation: pt-hero-fade 1.2s var(--pt-ease) 1.15s forwards; }
+  #shopify-section-{{ section.id }} .hero--center .hero__sub { margin-left: auto; margin-right: auto; }
+  #shopify-section-{{ section.id }} .hero__cta { margin-top: 2.6rem; opacity: 0; animation: pt-hero-fade 1.2s var(--pt-ease) 1.4s forwards; }
+  #shopify-section-{{ section.id }} .hero__cta .pt-btn { border-color: var(--pt-porcelain); }
+  #shopify-section-{{ section.id }} .hero__scroll { position: absolute; bottom: 2.6rem; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 1.1rem; color: rgba(250,248,244,0.72); font-size: 1.05rem; font-weight: 400; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0; animation: pt-hero-fade 1.2s ease 1.8s forwards; }
+  #shopify-section-{{ section.id }} .hero__scroll-line { width: 1px; height: 5.6rem; background: rgba(250,248,244,0.28); position: relative; overflow: hidden; }
+  #shopify-section-{{ section.id }} .hero__scroll-line::after { content: ""; position: absolute; left: 0; top: -100%; width: 100%; height: 100%; background: var(--pt-champagne); animation: pt-scrollcue 2.6s var(--pt-ease) 2s infinite; }
+  @keyframes pt-hero-fade { to { opacity: 1; } }
+  @keyframes pt-scrollcue { 0% { top: -100%; } 55%, 100% { top: 100%; } }
+  @media (max-width: 749px) {
+    #shopify-section-{{ section.id }} .hero__content { padding-top: 8rem; padding-bottom: 6.4rem; }
+    #shopify-section-{{ section.id }} .hero__sub { font-size: 1.55rem; }
+    #shopify-section-{{ section.id }} .hero__scroll { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #shopify-section-{{ section.id }} .hero__kicker,
+    #shopify-section-{{ section.id }} .hero__sub,
+    #shopify-section-{{ section.id }} .hero__cta,
+    #shopify-section-{{ section.id }} .hero__scroll { opacity: 1; animation: none; }
+    #shopify-section-{{ section.id }} .pt-line { transform: none; animation: none; }
+  }
+</style>
+
+<section class="hero hero--{{ hero_align }}" aria-label="{{ section.settings.heading | escape | default: 'Featured' }}" data-hero-overlay>
+  <div class="hero__media">
+    {%- if section.settings.image -%}
+      <img
+        class="{% if section.settings.ken_burns %}pt-kenburns{% endif %}"
+        src="{{ section.settings.image | image_url: width: 1600 }}"
+        srcset="{{ section.settings.image | image_url: width: 800 }} 800w, {{ section.settings.image | image_url: width: 1200 }} 1200w, {{ section.settings.image | image_url: width: 1600 }} 1600w, {{ section.settings.image | image_url: width: 2400 }} 2400w"
+        sizes="100vw"
+        alt="{{ section.settings.image.alt | default: section.settings.heading | escape }}"
+        fetchpriority="high"
+        loading="eager"
+        decoding="async">
+    {%- else -%}
+      <img
+        class="{% if section.settings.ken_burns %}pt-kenburns{% endif %}"
+        src="{{ 'placeholder-hero.jpg' | asset_url }}"
+        alt="{{ section.settings.heading | escape | default: 'Pitriciacle — objects of quiet grandeur' }}"
+        fetchpriority="high"
+        loading="eager"
+        decoding="async">
+    {%- endif -%}
+  </div>
+  <div class="hero__shade" aria-hidden="true"></div>
+  <div class="hero__content pt-container">
+    {%- if section.settings.kicker != blank -%}
+      <p class="pt-kicker hero__kicker">{{ section.settings.kicker | escape }}</p>
+    {%- endif -%}
+    <h1 class="hero__title">
+      {%- for line in hero_lines -%}
+        {%- assign delay = forloop.index0 | times: 18 | divided_by: 100.0 -%}
+        <span class="pt-line-mask"><span class="pt-line" style="--pt-line-delay: {{ 0.45 | plus: delay }}s">
+          {%- assign parts = line | split: '*' -%}
+          {%- for part in parts -%}
+            {%- assign odd = forloop.index0 | modulo: 2 -%}
+            {%- if odd == 1 -%}<em class="hero__accent">{{ part | escape }}</em>{%- else -%}{{ part | escape }}{%- endif -%}
+          {%- endfor -%}
+        </span></span>
+      {%- endfor -%}
+    </h1>
+    {%- if section.settings.subtext != blank -%}
+      <p class="hero__sub">{{ section.settings.subtext | escape }}</p>
+    {%- endif -%}
+    {%- if section.settings.cta_label != blank -%}
+      <div class="hero__cta">
+        <a href="{{ section.settings.cta_link | default: '/collections/all' }}" class="pt-btn pt-btn--outline" style="color: var(--pt-porcelain); border-color: rgba(250,248,244,0.65);">{{ section.settings.cta_label | escape }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+  {%- if section.settings.height == 'full' -%}
+    <div class="hero__scroll" aria-hidden="true">
+      <span>{{ 'general.scroll' | t }}</span>
+      <span class="hero__scroll-line"></span>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "The Festive Edit" },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Objects of *quiet* grandeur",
+      "info": "Wrap a word in *asterisks* for italic champagne accent. Use | for line breaks."
+    },
+    { "type": "textarea", "id": "subtext", "label": "Subtext", "default": "Heirlooms in the making — mirrors, light and hand-beaten brass, shaped by Indian artisans for homes that hold their light gently." },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Explore the collection" },
+    { "type": "url", "id": "cta_link", "label": "Button link", "default": "/collections/all" },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Height",
+      "options": [
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" },
+        { "value": "full", "label": "Full viewport" }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay strength",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 85
+    },
+    {
+      "type": "checkbox",
+      "id": "ken_burns",
+      "label": "Slow Ken Burns drift on image",
+      "default": true
+    }
+  ],
+  "presets": [{ "name": "Hero" }]
+}
+{% endschema %}
