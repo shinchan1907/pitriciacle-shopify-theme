@@ -1,0 +1,103 @@
+{%- comment -%} Pitriciacle · Marquee — slow editorial infinite marquee strip {%- endcomment -%}
+
+<style>
+  #shopify-section-{{ section.id }} .mq {
+    overflow: hidden;
+    padding: 2.6rem 0;
+    border-top: 1px solid rgba(201, 169, 106, 0.35);
+    border-bottom: 1px solid rgba(201, 169, 106, 0.35);
+    background: var(--pt-porcelain);
+  }
+  #shopify-section-{{ section.id }} .mq__group { display: flex; align-items: baseline; flex-shrink: 0; }
+  #shopify-section-{{ section.id }} .mq__item {
+    display: flex;
+    align-items: baseline;
+    gap: 3.2rem;
+    padding: 0 1.6rem;
+    white-space: nowrap;
+  }
+  #shopify-section-{{ section.id }} .mq__text {
+    font-family: var(--pt-serif);
+    font-weight: 400;
+    font-size: clamp(2.2rem, 3.6vw, 3.6rem);
+    letter-spacing: 0.02em;
+  }
+  #shopify-section-{{ section.id }} .mq__sep {
+    font-family: var(--pt-serif);
+    color: var(--pt-champagne);
+    font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+  }
+  #shopify-section-{{ section.id }} .mq--outline .mq__text {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--pt-ink);
+  }
+  #shopify-section-{{ section.id }} .mq--outline .mq__sep { -webkit-text-stroke: 0; }
+</style>
+
+<div class="mq mq--{{ section.settings.style | default: 'solid' }}" role="marquee" aria-label="{{ section.settings.aria_label | escape | default: 'Craft highlights' }}">
+  <div class="pt-marquee">
+    <div class="pt-marquee__track" style="--pt-marquee-duration: {{ section.settings.speed | default: 46 }}s;">
+      {%- for n in (1..2) -%}
+        <div class="mq__group"{% if n == 2 %} aria-hidden="true"{% endif %}>
+          {%- for block in section.blocks -%}
+            <span class="mq__item" {{ block.shopify_attributes }}>
+              <span class="mq__text">{{ block.settings.text | escape }}</span>
+              <span class="mq__sep" aria-hidden="true">—</span>
+            </span>
+          {%- endfor -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Marquee",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Text style",
+      "options": [
+        { "value": "solid", "label": "Solid serif" },
+        { "value": "outline", "label": "Outlined serif" }
+      ],
+      "default": "outline"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Scroll speed",
+      "min": 20,
+      "max": 90,
+      "step": 2,
+      "unit": "s",
+      "default": 46,
+      "info": "Seconds per loop — higher is slower."
+    },
+    { "type": "text", "id": "aria_label", "label": "Accessibility label", "default": "Craft highlights" }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Phrase",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Phrase", "default": "Hand-carved" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Marquee",
+      "blocks": [
+        { "type": "item", "settings": { "text": "Hand-carved" } },
+        { "type": "item", "settings": { "text": "Hand-beaten" } },
+        { "type": "item", "settings": { "text": "Heirloom grade" } },
+        { "type": "item", "settings": { "text": "Made in India" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
