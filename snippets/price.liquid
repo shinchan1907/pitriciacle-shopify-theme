@@ -1,0 +1,12 @@
+{%- comment -%}
+  Price — usage: {% render 'price', product: product %}
+  Renders price with compare-at when on sale.
+{%- endcomment -%}
+{%- if product != blank -%}
+  <p class="pt-price{% if product.compare_at_price > product.price %} pt-price--sale{% endif %}">
+    {{ product.price | money }}
+    {%- if product.compare_at_price > product.price -%}
+      <s class="pt-price--compare">{{ product.compare_at_price | money }}</s>
+    {%- endif -%}
+  </p>
+{%- endif -%}
