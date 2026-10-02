@@ -1,0 +1,82 @@
+{
+  "order": [
+    "main"
+  ],
+  "sections": {
+    "main": {
+      "block_order": [
+        "title",
+        "price",
+        "description",
+        "variant_picker",
+        "quantity",
+        "buy_buttons",
+        "details",
+        "complete_room",
+        "shipping_returns",
+        "related"
+      ],
+      "blocks": {
+        "buy_buttons": {
+          "settings": {},
+          "type": "buy-buttons"
+        },
+        "description": {
+          "settings": {},
+          "type": "description"
+        },
+        "details": {
+          "settings": {
+            "show_artisan": true,
+            "show_care": true,
+            "show_craft": true,
+            "show_dimensions": true,
+            "show_material": true,
+            "show_weight": true
+          },
+          "type": "details"
+        },
+        "price": {
+          "settings": {},
+          "type": "price"
+        },
+        "quantity": {
+          "settings": {},
+          "type": "quantity"
+        },
+        "related": {
+          "settings": {
+            "count": 4,
+            "heading": "You may also admire"
+          },
+          "type": "related"
+        },
+        "shipping_returns": {
+          "settings": {
+            "content": "<p>Complimentary insured shipping across India on every order. Each piece is carefully packed by our atelier and dispatched within 5\u20137 working days.</p><p>If a piece does not feel right in your home, you may return it within 7 days of delivery in its original condition for a full refund.</p>",
+            "heading": "Shipping & returns"
+          },
+          "type": "accordion"
+        },
+        "title": {
+          "settings": {},
+          "type": "title"
+        },
+        "variant_picker": {
+          "settings": {},
+          "type": "variant-picker"
+        },
+        "complete_room": {
+          "type": "complete_room",
+          "settings": {
+            "heading": "Complete the room"
+          }
+        }
+      },
+      "settings": {
+        "show_thumbnails": true
+      },
+      "type": "main-product"
+    }
+  }
+}
