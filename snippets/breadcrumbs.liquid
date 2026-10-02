@@ -1,0 +1,32 @@
+{%- comment -%}
+  Breadcrumbs — usage: {% render 'breadcrumbs' %}
+  Home / Collection / Product trail.
+{%- endcomment -%}
+<nav class="pt-breadcrumbs" aria-label="{{ 'general.breadcrumbs.label' | t }}">
+  <ol>
+    <li><a href="{{ routes.root_url }}">{{ 'general.breadcrumbs.home' | t }}</a></li>
+    {%- if template.name == 'product' and collection -%}
+      <li><a href="{{ collection.url }}">{{ collection.title }}</a></li>
+      <li><span aria-current="page">{{ product.title }}</span></li>
+    {%- elsif template.name == 'product' -%}
+      <li><span aria-current="page">{{ product.title }}</span></li>
+    {%- elsif template.name == 'collection' -%}
+      <li><span aria-current="page">{{ collection.title }}</span></li>
+    {%- elsif template.name == 'blog' -%}
+      <li><span aria-current="page">{{ blog.title }}</span></li>
+    {%- elsif template.name == 'article' -%}
+      <li><a href="{{ blog.url }}">{{ blog.title }}</a></li>
+      <li><span aria-current="page">{{ article.title }}</span></li>
+    {%- elsif template.name == 'page' or template.name contains 'page.' -%}
+      <li><span aria-current="page">{{ page.title }}</span></li>
+    {%- elsif template.name == 'search' -%}
+      <li><span aria-current="page">{{ 'general.breadcrumbs.search' | t }}</span></li>
+    {%- elsif template.name == 'cart' -%}
+      <li><span aria-current="page">{{ 'general.breadcrumbs.cart' | t }}</span></li>
+    {%- elsif template.name contains 'customers' -%}
+      <li><span aria-current="page">{{ page_title }}</span></li>
+    {%- else -%}
+      <li><span aria-current="page">{{ page_title }}</span></li>
+    {%- endif -%}
+  </ol>
+</nav>
