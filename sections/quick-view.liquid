@@ -1,0 +1,36 @@
+{%- comment -%}
+  Pitriciacle · Quick view — accessible modal populated via /products/{handle}.js.
+  Static section, rendered once in layout/theme.liquid. All strings via JS + locales.
+{%- endcomment -%}
+<div
+  class="pt-qv"
+  id="QuickView"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="qv-title"
+  aria-hidden="true"
+  data-qv-add="{{ 'products.product.add_to_bag' | t }}"
+  data-qv-soldout="{{ 'products.product.sold_out' | t }}"
+  data-qv-view-full="{{ 'products.product.view_full_details' | t }}"
+  hidden>
+  <div class="pt-qv__overlay" data-qv-close></div>
+  <div class="pt-qv__panel" role="document" data-trap-root tabindex="-1">
+    <button
+      type="button"
+      class="pt-icon-btn pt-qv__close"
+      data-qv-close
+      aria-label="{{ 'products.product.close_quick_view' | t }}">
+      {% render 'icons', icon: 'close' %}
+    </button>
+    <div data-qv-content>
+      <p class="pt-qv__loading" aria-hidden="true">Pitriciacle</p>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Quick view",
+  "settings": []
+}
+{% endschema %}
