@@ -1,0 +1,189 @@
+{%- comment -%} Pitriciacle · Main order — order detail {%- endcomment -%}
+
+<style>
+  #shopify-section-{{ section.id }} .ord { max-width: 62rem; margin: 0 auto; }
+  #shopify-section-{{ section.id }} .ord__top { margin-bottom: 3rem; }
+  #shopify-section-{{ section.id }} .ord__top h1 { margin: 0.75rem 0 0.5rem; }
+  #shopify-section-{{ section.id }} .ord__cancelled { border: 1px solid rgba(138,129,120,0.5); padding: 1.25rem 1.5rem; margin-bottom: 2.5rem; }
+  #shopify-section-{{ section.id }} .ord__section-title { margin: 0 0 1.25rem; }
+  #shopify-section-{{ section.id }} .ord__block { margin-bottom: 3.5rem; }
+  #shopify-section-{{ section.id }} .ord__tablewrap { overflow-x: auto; border-top: 1px solid rgba(138,129,120,0.35); }
+  #shopify-section-{{ section.id }} .ord__table { width: 100%; border-collapse: collapse; min-width: 36rem; }
+  #shopify-section-{{ section.id }} .ord__table th { text-align: left; font-family: var(--pt-sans); font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--pt-stone); font-weight: 500; padding: 1rem 1rem 1rem 0; border-bottom: 1px solid rgba(138,129,120,0.35); }
+  #shopify-section-{{ section.id }} .ord__table td { padding: 1.1rem 1rem 1.1rem 0; border-bottom: 1px solid rgba(138,129,120,0.2); vertical-align: top; }
+  #shopify-section-{{ section.id }} .ord__item-title { font-family: var(--pt-serif); font-size: 1.2rem; margin: 0 0 0.25rem; }
+  #shopify-section-{{ section.id }} .ord__fulfilled { font-size: 0.85rem; }
+  #shopify-section-{{ section.id }} .ord__cols { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+  #shopify-section-{{ section.id }} .ord__cols address { font-style: normal; line-height: 1.8; }
+  #shopify-section-{{ section.id }} .ord__totals { max-width: 26rem; margin-left: auto; }
+  #shopify-section-{{ section.id }} .ord__trow { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 0.8rem; }
+  #shopify-section-{{ section.id }} .ord__grand { border-top: 1px solid rgba(138,129,120,0.4); padding-top: 1rem; margin-top: 1rem; font-family: var(--pt-serif); font-size: 1.4rem; }
+  #shopify-section-{{ section.id }} .ord__back { display: inline-block; margin-top: 1rem; }
+  @media (min-width: 750px) {
+    #shopify-section-{{ section.id }} .ord__cols { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+
+<div class="pt-section pt-scheme--{{ section.settings.color_scheme | default: 'porcelain' }}"{% if section.settings.padding_top > 0 or section.settings.padding_bottom > 0 %} style="{% if section.settings.padding_top > 0 %}--pt-pad-top: {{ section.settings.padding_top }}px;{% endif %}{% if section.settings.padding_bottom > 0 %}--pt-pad-bottom: {{ section.settings.padding_bottom }}px;{% endif %}"{% endif %}>
+  <div class="pt-container">
+    <div class="ord">
+      <div class="ord__top">
+        <p class="pt-kicker">{{ 'customer.order' | t }}</p>
+        <h1 class="pt-h1">{{ order.name | escape }}</h1>
+        <p class="pt-muted">Placed on {{ order.created_at | time_tag: '%B %d, %Y' }}</p>
+      </div>
+
+      {%- if order.cancelled -%}
+        <div class="ord__cancelled">
+          <p class="pt-kicker">{{ 'customer.cancelled' | t }}</p>
+          <p class="pt-body">Cancelled on {{ order.cancelled_at | time_tag: '%B %d, %Y' }}{% if order.cancel_reason_label != blank %} — {{ order.cancel_reason_label | escape }}{% endif %}.</p>
+        </div>
+      {%- endif -%}
+
+      <div class="ord__block">
+        <h2 class="pt-h2 ord__section-title">{{ 'customer.items' | t }}</h2>
+        <div class="ord__tablewrap">
+          <table class="ord__table">
+            <thead>
+              <tr>
+                <th scope="col">{{ 'customer.item' | t }}</th>
+                <th scope="col">{{ 'customer.quantity' | t }}</th>
+                <th scope="col">{{ 'customer.price' | t }}</th>
+                <th scope="col">{{ 'customer.total' | t }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {%- for line_item in order.line_items -%}
+                <tr>
+                  <td>
+                    <p class="ord__item-title">{{ line_item.title | escape }}</p>
+                    {%- unless line_item.variant.title == 'Default Title' -%}
+                      <p class="pt-muted">{{ line_item.variant.title | escape }}</p>
+                    {%- endunless -%}
+                    {%- if line_item.fulfillment -%}
+                      <p class="pt-muted ord__fulfilled">Fulfilled {{ line_item.fulfillment.created_at | time_tag: '%B %d, %Y' }}{% if line_item.fulfillment.tracking_number != blank %} · Tracking {{ line_item.fulfillment.tracking_number | escape }}{% endif %}</p>
+                    {%- endif -%}
+                  </td>
+                  <td>{{ line_item.quantity }}</td>
+                  <td>{{ line_item.final_price | money }}</td>
+                  <td>{{ line_item.final_line_price | money }}</td>
+                </tr>
+              {%- endfor -%}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="ord__block">
+        <h2 class="pt-h2 ord__section-title">{{ 'customer.addresses' | t }}</h2>
+        <div class="ord__cols">
+          <div>
+            <p class="pt-kicker">{{ 'customer.billing_address' | t }}</p>
+            <address class="pt-body">{{ order.billing_address | format_address }}</address>
+          </div>
+          <div>
+            <p class="pt-kicker">{{ 'customer.shipping_address' | t }}</p>
+            <address class="pt-body">{{ order.shipping_address | format_address }}</address>
+          </div>
+        </div>
+      </div>
+
+      <div class="ord__block">
+        <h2 class="pt-h2 ord__section-title">{{ 'customer.totals' | t }}</h2>
+        <div class="ord__totals">
+          <div class="ord__trow">
+            <span class="pt-muted">{{ 'customer.subtotal' | t }}</span>
+            <span>{{ order.line_items_subtotal_price | money }}</span>
+          </div>
+          {%- if order.total_discounts > 0 -%}
+            <div class="ord__trow">
+              <span class="pt-muted">{{ 'customer.discounts' | t }}</span>
+              <span>&minus;{{ order.total_discounts | money }}</span>
+            </div>
+          {%- endif -%}
+          {%- for shipping_method in order.shipping_methods -%}
+            <div class="ord__trow">
+              <span class="pt-muted">Shipping ({{ shipping_method.title | escape }})</span>
+              <span>{{ shipping_method.price | money }}</span>
+            </div>
+          {%- endfor -%}
+          {%- for tax_line in order.tax_lines -%}
+            <div class="ord__trow">
+              <span class="pt-muted">{{ tax_line.title | escape }} ({{ tax_line.rate | times: 100 }}%)</span>
+              <span>{{ tax_line.price | money }}</span>
+            </div>
+          {%- endfor -%}
+          <div class="ord__trow ord__grand">
+            <span>{{ 'customer.total' | t }}</span>
+            <span>{{ order.total_price | money }}</span>
+          </div>
+        </div>
+      </div>
+
+      <a href="{{ routes.account_url }}" class="pt-btn--quiet ord__back">&larr; Back to account</a>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Order",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "porcelain",
+          "label": "Porcelain"
+        },
+        {
+          "value": "sand",
+          "label": "Sand"
+        },
+        {
+          "value": "sage",
+          "label": "Sage"
+        },
+        {
+          "value": "blush",
+          "label": "Blush"
+        },
+        {
+          "value": "ink",
+          "label": "Ink"
+        }
+      ],
+      "default": "porcelain"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "info": "0 uses the theme default spacing."
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "info": "0 uses the theme default spacing."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Order"
+    }
+  ]
+}
+{% endschema %}
