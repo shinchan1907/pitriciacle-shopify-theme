@@ -1,0 +1,47 @@
+<div class="pt-drawer" id="SearchDrawer" role="dialog" aria-modal="true" aria-label="{{ 'general.search.search' | t }}" aria-hidden="true">
+  <div class="pt-drawer__overlay" data-drawer-close></div>
+  <div class="pt-drawer__panel pt-drawer__panel--search" data-trap-root tabindex="-1">
+    <div class="pt-drawer__head">
+      <span class="pt-drawer__title">{{ 'general.search.search' | t }}</span>
+      <button type="button" class="pt-icon-btn" data-drawer-close aria-label="{{ 'general.search.close_search' | t }}">
+        {% render 'icons', icon: 'close' %}
+      </button>
+    </div>
+    <div class="pt-drawer__body">
+      <form action="{{ routes.search_url }}" method="get" role="search" class="pt-search-form">
+        <label class="pt-visually-hidden" for="SearchDrawer-input">{{ 'general.search.placeholder' | t }}</label>
+        <input
+          type="search"
+          id="SearchDrawer-input"
+          name="q"
+          class="pt-input"
+          placeholder="{{ 'general.search.placeholder' | t }}"
+          value="{{ search.terms | escape }}"
+          data-predictive-search-input
+          data-label-products="{{ 'search.products' | t }}"
+          data-label-collections="{{ 'search.collections' | t }}"
+          data-label-pages="{{ 'search.pages' | t }}"
+          data-label-view-all="{{ 'search.view_all' | t }}"
+          data-label-no-results="{{ 'search.no_results' | t }}"
+          autocomplete="off">
+        <button type="submit" class="pt-btn" aria-label="{{ 'general.search.search' | t }}">{% render 'icons', icon: 'search' %}</button>
+      </form>
+
+      <div id="predictive-results" data-predictive-search-results hidden></div>
+
+      <p class="pt-kicker" style="margin-top: 3.2rem;">{{ 'general.search.popular' | t }}</p>
+      <div class="pt-search-suggestions">
+        {%- for term in 'general.search.popular_terms' | t | split: "," -%}
+          <a class="pt-btn pt-btn--outline" style="min-height: 4.4rem; padding: 1rem 2.4rem;" href="{{ routes.search_url }}?q={{ term | url_encode }}">{{ term }}</a>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Search drawer",
+  "settings": []
+}
+{% endschema %}
