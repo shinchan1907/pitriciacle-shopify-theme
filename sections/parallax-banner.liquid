@@ -1,0 +1,116 @@
+{%- comment -%} Pitriciacle · Parallax banner — full-bleed image with scroll parallax and serif quote {%- endcomment -%}
+
+{%- liquid
+  assign pb_h = '80svh'
+  if section.settings.height == 'short'
+    assign pb_h = '60svh'
+  elsif section.settings.height == 'full'
+    assign pb_h = '100svh'
+  endif
+  assign shade_o = section.settings.overlay_opacity | default: 55 | divided_by: 100.0
+-%}
+
+<style>
+  #shopify-section-{{ section.id }} .pb { position: relative; overflow: hidden; min-height: {{ pb_h }}; display: flex; align-items: center; justify-content: center; text-align: center; color: var(--pt-porcelain); }
+  #shopify-section-{{ section.id }} .pb__media { position: absolute; inset: 0; overflow: hidden; background: var(--pt-sand); }
+  #shopify-section-{{ section.id }} .pb__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #shopify-section-{{ section.id }} .pb__media[data-parallax-media] img { height: 122%; margin-top: -11%; }
+  #shopify-section-{{ section.id }} .pb__shade { position: absolute; inset: 0; opacity: {{ shade_o }}; background: linear-gradient(to bottom, rgba(24,19,14,0.28), rgba(24,19,14,0.52)); }
+  #shopify-section-{{ section.id }} .pb__content { position: relative; z-index: 1; padding-top: 6rem; padding-bottom: 6rem; }
+  #shopify-section-{{ section.id }} .pb__kicker { color: var(--pt-champagne); }
+  #shopify-section-{{ section.id }} .pb__quote {
+    font-family: var(--pt-serif);
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(2.6rem, 4.8vw, 5rem);
+    line-height: 1.25;
+    max-width: 22ch;
+    margin: 2rem auto 0;
+  }
+  #shopify-section-{{ section.id }} .pb__attr { margin-top: 2rem; font-size: 1.25rem; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(250,248,244,0.78); }
+  #shopify-section-{{ section.id }} .pb__cta { margin-top: 3rem; }
+  #shopify-section-{{ section.id }} .pb__cta .pt-btn--outline { color: var(--pt-porcelain); border-color: rgba(250,248,244,0.65); }
+  #shopify-section-{{ section.id }} .pb__cta .pt-btn--outline:hover { background: var(--pt-porcelain); color: var(--pt-ink); border-color: var(--pt-porcelain); }
+</style>
+
+<section class="pb" aria-label="{{ section.settings.kicker | escape | default: 'Atelier' }}">
+  <div class="pb__media"{% if section.settings.parallax %} data-parallax-media{% endif %}>
+    {%- if section.settings.image -%}
+      <img
+        {% if section.settings.parallax %}data-parallax="0.14"{% endif %}
+        src="{{ section.settings.image | image_url: width: 1600 }}"
+        srcset="{{ section.settings.image | image_url: width: 800 }} 800w, {{ section.settings.image | image_url: width: 1600 }} 1600w, {{ section.settings.image | image_url: width: 2400 }} 2400w"
+        sizes="100vw"
+        alt="{{ section.settings.image.alt | default: section.settings.quote | escape }}"
+        loading="lazy"
+        decoding="async">
+    {%- else -%}
+      <img
+        {% if section.settings.parallax %}data-parallax="0.14"{% endif %}
+        src="{{ 'placeholder-craft-02.jpg' | asset_url }}"
+        alt="{{ section.settings.quote | escape | default: 'Inside the Pitriciacle atelier' }}"
+        loading="lazy"
+        decoding="async">
+    {%- endif -%}
+  </div>
+  <div class="pb__shade" aria-hidden="true"></div>
+  <div class="pb__content pt-container">
+    {%- if section.settings.kicker != blank -%}
+      <p class="pt-kicker pb__kicker pt-reveal">{{ section.settings.kicker | escape }}</p>
+    {%- endif -%}
+    {%- if section.settings.quote != blank -%}
+      <blockquote class="pb__quote pt-reveal" style="--pt-reveal-delay: 0.15s;">&ldquo;{{ section.settings.quote | escape }}&rdquo;</blockquote>
+    {%- endif -%}
+    {%- if section.settings.attribution != blank -%}
+      <p class="pb__attr pt-reveal" style="--pt-reveal-delay: 0.25s;">&mdash; {{ section.settings.attribution | escape }}</p>
+    {%- endif -%}
+    {%- if section.settings.cta_label != blank -%}
+      <div class="pb__cta pt-reveal" style="--pt-reveal-delay: 0.35s;">
+        <a href="{{ section.settings.cta_link | default: '/pages/craft' }}" class="pt-btn pt-btn--outline">{{ section.settings.cta_label | escape }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Parallax banner",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "The atelier" },
+    { "type": "textarea", "id": "quote", "label": "Quote", "default": "A home remembers what the hands have made." },
+    { "type": "text", "id": "attribution", "label": "Attribution", "default": "The Pitriciacle atelier" },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Our craft" },
+    { "type": "url", "id": "cta_link", "label": "Button link", "default": "/pages/craft" },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Height",
+      "options": [
+        { "value": "short", "label": "Short" },
+        { "value": "tall", "label": "Tall" },
+        { "value": "full", "label": "Full viewport" }
+      ],
+      "default": "tall"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay strength",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "default": 55
+    },
+    {
+      "type": "checkbox",
+      "id": "parallax",
+      "label": "Slow parallax drift on image",
+      "default": true,
+      "info": "Desktop only; disabled automatically on mobile and for reduced-motion."
+    }
+  ],
+  "presets": [{ "name": "Parallax banner" }]
+}
+{% endschema %}
