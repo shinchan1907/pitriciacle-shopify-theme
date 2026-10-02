@@ -1,0 +1,86 @@
+{%- comment -%}
+  Product card — usage: {% render 'product-card', product: product %}
+  Hover swaps to the second image (falls back to zoom); quick-add + quick-view
+  reveal on hover (desktop), always visible on touch. Tag badges via product
+  tags: "new" and "bestseller". Interactive elements are siblings, never nested.
+{%- endcomment -%}
+{%- if product != blank -%}
+  {%- liquid
+    assign second_image = nil
+    if product.media.size > 1 and product.media[1].media_type == 'image'
+      assign second_image = product.media[1]
+    endif
+    assign downcased_tags = product.tags | join: ',' | downcase
+  -%}
+  <article class="pt-product-card pt-reveal">
+    <div class="pt-product-card__media">
+      <a href="{{ product.url }}" class="pt-product-card__link" aria-label="{{ product.title | escape }}">
+        {%- if product.featured_media -%}
+          <img
+            class="pt-product-card__img"
+            src="{{ product.featured_media | image_url: width: 800 }}"
+            srcset="{{ product.featured_media | image_url: width: 400 }} 400w, {{ product.featured_media | image_url: width: 800 }} 800w"
+            sizes="(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw"
+            alt="{{ product.featured_media.alt | default: product.title | escape }}"
+            loading="lazy"
+            width="800"
+            height="1000">
+          {%- if second_image -%}
+            <img
+              class="pt-product-card__img pt-product-card__img--alt"
+              src="{{ second_image | image_url: width: 800 }}"
+              srcset="{{ second_image | image_url: width: 400 }} 400w, {{ second_image | image_url: width: 800 }} 800w"
+              sizes="(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw"
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              width="800"
+              height="1000">
+          {%- endif -%}
+        {%- else -%}
+          <img
+            class="pt-product-card__img"
+            src="{{ 'placeholder-hero.jpg' | asset_url }}"
+            alt="{{ product.title | escape }}"
+            loading="lazy"
+            width="800"
+            height="1000">
+        {%- endif -%}
+        <span class="pt-product-card__badges" aria-hidden="true">
+          {%- if product.compare_at_price > product.price -%}
+            <span class="pt-product-card__badge">{{ 'products.product.on_sale' | t }}</span>
+          {%- elsif downcased_tags contains 'new' -%}
+            <span class="pt-product-card__badge pt-product-card__badge--accent">{{ 'products.product.badge_new' | t }}</span>
+          {%- elsif downcased_tags contains 'bestseller' -%}
+            <span class="pt-product-card__badge pt-product-card__badge--accent">{{ 'products.product.badge_bestseller' | t }}</span>
+          {%- elsif downcased_tags contains 'made-to-order' -%}
+            <span class="pt-product-card__badge pt-product-card__badge--accent">{{ 'products.made_to_order.badge' | t }}</span>
+          {%- endif -%}
+        </span>
+      </a>
+      <button
+        type="button"
+        class="pt-icon-btn pt-product-card__qv"
+        data-quick-view="{{ product.handle }}"
+        aria-label="{{ 'products.product.quick_view' | t }}: {{ product.title | escape }}">
+        {% render 'icons', icon: 'eye' %}
+      </button>
+      {% render 'wishlist-button', product: product, class: 'pt-product-card__wish' %}
+      {%- if product.available and product.selected_or_first_available_variant -%}
+        <span class="pt-product-card__quick">
+          <button
+            type="button"
+            class="pt-btn pt-btn--full"
+            data-add-to-cart="{{ product.selected_or_first_available_variant.id }}"
+            aria-label="{{ 'products.product.add_to_cart' | t }}: {{ product.title | escape }}">
+            {{ 'products.product.add_to_cart' | t }}
+          </button>
+        </span>
+      {%- endif -%}
+    </div>
+    <div class="pt-product-card__info">
+      <h3 class="pt-product-card__title"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+      <div class="pt-product-card__price">{% render 'price', product: product %}</div>
+    </div>
+  </article>
+{%- endif -%}
