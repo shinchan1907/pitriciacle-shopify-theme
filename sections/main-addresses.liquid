@@ -1,0 +1,291 @@
+{%- comment -%} Pitriciacle · Main addresses — manage customer addresses {%- endcomment -%}
+
+<style>
+  #shopify-section-{{ section.id }} .addr { max-width: 62rem; margin: 0 auto; }
+  #shopify-section-{{ section.id }} .addr__top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 3rem; }
+  #shopify-section-{{ section.id }} .addr__top h1 { margin: 0.75rem 0 0; }
+  #shopify-section-{{ section.id }} .addr__grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 3rem; }
+  #shopify-section-{{ section.id }} .addr__card { border: 1px solid rgba(138,129,120,0.4); padding: 2rem; }
+  #shopify-section-{{ section.id }} .addr__view address { font-style: normal; line-height: 1.8; margin: 1rem 0 1.5rem; }
+  #shopify-section-{{ section.id }} .addr__actions { display: flex; align-items: center; gap: 1.5rem; }
+  #shopify-section-{{ section.id }} .addr__delete { display: inline; }
+  #shopify-section-{{ section.id }} .addr__field { margin-bottom: 1.1rem; }
+  #shopify-section-{{ section.id }} .addr__field .pt-label { display: block; margin-bottom: 0.45rem; }
+  #shopify-section-{{ section.id }} .addr__field .pt-input, #shopify-section-{{ section.id }} .addr__field select { width: 100%; }
+  #shopify-section-{{ section.id }} .addr__duo { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  #shopify-section-{{ section.id }} .addr__check { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.25rem; cursor: pointer; }
+  #shopify-section-{{ section.id }} .addr__check input { accent-color: var(--pt-champagne); }
+  #shopify-section-{{ section.id }} .addr__formbtns { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; }
+  #shopify-section-{{ section.id }} .addr__new { border: 1px solid rgba(138,129,120,0.4); padding: 2rem; margin-bottom: 3rem; }
+  #shopify-section-{{ section.id }} .addr__new h2 { margin: 0 0 1.75rem; }
+  #shopify-section-{{ section.id }} .addr__back { display: inline-block; margin-top: 1rem; }
+  @media (min-width: 750px) {
+    #shopify-section-{{ section.id }} .addr__grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+
+<div class="pt-section pt-scheme--{{ section.settings.color_scheme | default: 'porcelain' }}"{% if section.settings.padding_top > 0 or section.settings.padding_bottom > 0 %} style="{% if section.settings.padding_top > 0 %}--pt-pad-top: {{ section.settings.padding_top }}px;{% endif %}{% if section.settings.padding_bottom > 0 %}--pt-pad-bottom: {{ section.settings.padding_bottom }}px;{% endif %}"{% endif %}>
+  <div class="pt-container">
+    <div class="addr">
+      <div class="addr__top">
+        <div>
+          <p class="pt-kicker">{{ 'customer.account' | t }}</p>
+          <h1 class="pt-h1">{{ 'customer.addresses' | t }}</h1>
+        </div>
+        <button type="button" class="pt-btn--outline" data-addr-new-toggle>{{ 'customer.add_new_address' | t }}</button>
+      </div>
+
+      <div class="addr__new" id="addr-new" hidden>
+        <h2 class="pt-h2">{{ 'customer.new_address' | t }}</h2>
+        {% form 'customer_address', customer.new_address %}
+          <div class="addr__duo">
+            <div class="addr__field">
+              <label class="pt-label" for="addr-new-first">{{ 'customer.first_name' | t }}</label>
+              <input type="text" id="addr-new-first" name="address[first_name]" class="pt-input" autocomplete="given-name">
+            </div>
+            <div class="addr__field">
+              <label class="pt-label" for="addr-new-last">{{ 'customer.last_name' | t }}</label>
+              <input type="text" id="addr-new-last" name="address[last_name]" class="pt-input" autocomplete="family-name">
+            </div>
+          </div>
+          <div class="addr__field">
+            <label class="pt-label" for="addr-new-company">{{ 'customer.company' | t }}</label>
+            <input type="text" id="addr-new-company" name="address[company]" class="pt-input" autocomplete="organization">
+          </div>
+          <div class="addr__field">
+            <label class="pt-label" for="addr-new-a1">{{ 'customer.address' | t }}</label>
+            <input type="text" id="addr-new-a1" name="address[address1]" class="pt-input" autocomplete="street-address">
+          </div>
+          <div class="addr__field">
+            <label class="pt-label" for="addr-new-a2">Apartment, suite, etc. (optional)</label>
+            <input type="text" id="addr-new-a2" name="address[address2]" class="pt-input">
+          </div>
+          <div class="addr__duo">
+            <div class="addr__field">
+              <label class="pt-label" for="addr-new-city">{{ 'customer.city' | t }}</label>
+              <input type="text" id="addr-new-city" name="address[city]" class="pt-input" autocomplete="address-level2">
+            </div>
+            <div class="addr__field">
+              <label class="pt-label" for="addr-new-zip">{{ 'customer.zip' | t }}</label>
+              <input type="text" id="addr-new-zip" name="address[zip]" class="pt-input" autocomplete="postal-code">
+            </div>
+          </div>
+          <div class="addr__duo">
+            <div class="addr__field">
+              <label class="pt-label" for="addr-new-country">{{ 'customer.country' | t }}</label>
+              <select id="addr-new-country" name="address[country]" class="pt-input" data-country data-default="India" autocomplete="country-name">
+                {{ all_country_option_tags }}
+              </select>
+            </div>
+            <div class="addr__field">
+              <label class="pt-label" for="addr-new-province">{{ 'customer.state' | t }}</label>
+              <input type="text" id="addr-new-province" name="address[province]" class="pt-input" autocomplete="address-level1">
+            </div>
+          </div>
+          <div class="addr__field">
+            <label class="pt-label" for="addr-new-phone">{{ 'customer.phone' | t }}</label>
+            <input type="tel" id="addr-new-phone" name="address[phone]" class="pt-input" autocomplete="tel">
+          </div>
+          <label class="addr__check">
+            <input type="checkbox" name="address[default]" value="1">
+            <span>{{ 'customer.set_default' | t }}</span>
+          </label>
+          <div class="addr__formbtns">
+            <button type="submit" class="pt-btn">{{ 'customer.add_address' | t }}</button>
+            <button type="button" class="pt-btn--quiet" data-addr-new-toggle>{{ 'customer.cancel' | t }}</button>
+          </div>
+        {% endform %}
+      </div>
+
+      <div class="addr__grid">
+        {%- for address in customer.addresses -%}
+          <div class="addr__card">
+            <div class="addr__view" id="addr-view-{{ address.id }}">
+              {%- if address == customer.default_address -%}
+                <p class="pt-kicker">{{ 'customer.default_address' | t }}</p>
+              {%- endif -%}
+              <address class="pt-body">{{ address | format_address }}</address>
+              <div class="addr__actions">
+                <button type="button" class="pt-btn--outline" data-addr-edit="{{ address.id }}">{{ 'customer.edit' | t }}</button>
+                <form method="post" action="/account/addresses/{{ address.id }}" class="addr__delete">
+                  <input type="hidden" name="_method" value="delete">
+                  <button type="submit" class="pt-btn--quiet" data-confirm="Delete this address?">{{ 'customer.delete' | t }}</button>
+                </form>
+              </div>
+            </div>
+            <div class="addr__form" id="addr-edit-{{ address.id }}" hidden>
+              {% form 'customer_address', address %}
+                <div class="addr__duo">
+                  <div class="addr__field">
+                    <label class="pt-label" for="addr-first-{{ address.id }}">{{ 'customer.first_name' | t }}</label>
+                    <input type="text" id="addr-first-{{ address.id }}" name="address[first_name]" class="pt-input" value="{{ address.first_name }}" autocomplete="given-name">
+                  </div>
+                  <div class="addr__field">
+                    <label class="pt-label" for="addr-last-{{ address.id }}">{{ 'customer.last_name' | t }}</label>
+                    <input type="text" id="addr-last-{{ address.id }}" name="address[last_name]" class="pt-input" value="{{ address.last_name }}" autocomplete="family-name">
+                  </div>
+                </div>
+                <div class="addr__field">
+                  <label class="pt-label" for="addr-company-{{ address.id }}">{{ 'customer.company' | t }}</label>
+                  <input type="text" id="addr-company-{{ address.id }}" name="address[company]" class="pt-input" value="{{ address.company }}" autocomplete="organization">
+                </div>
+                <div class="addr__field">
+                  <label class="pt-label" for="addr-a1-{{ address.id }}">{{ 'customer.address' | t }}</label>
+                  <input type="text" id="addr-a1-{{ address.id }}" name="address[address1]" class="pt-input" value="{{ address.address1 }}" autocomplete="street-address">
+                </div>
+                <div class="addr__field">
+                  <label class="pt-label" for="addr-a2-{{ address.id }}">Apartment, suite, etc. (optional)</label>
+                  <input type="text" id="addr-a2-{{ address.id }}" name="address[address2]" class="pt-input" value="{{ address.address2 }}">
+                </div>
+                <div class="addr__duo">
+                  <div class="addr__field">
+                    <label class="pt-label" for="addr-city-{{ address.id }}">{{ 'customer.city' | t }}</label>
+                    <input type="text" id="addr-city-{{ address.id }}" name="address[city]" class="pt-input" value="{{ address.city }}" autocomplete="address-level2">
+                  </div>
+                  <div class="addr__field">
+                    <label class="pt-label" for="addr-zip-{{ address.id }}">{{ 'customer.zip' | t }}</label>
+                    <input type="text" id="addr-zip-{{ address.id }}" name="address[zip]" class="pt-input" value="{{ address.zip }}" autocomplete="postal-code">
+                  </div>
+                </div>
+                <div class="addr__duo">
+                  <div class="addr__field">
+                    <label class="pt-label" for="addr-country-{{ address.id }}">{{ 'customer.country' | t }}</label>
+                    <select id="addr-country-{{ address.id }}" name="address[country]" class="pt-input" data-country data-default="{{ address.country }}" autocomplete="country-name">
+                      {{ all_country_option_tags }}
+                    </select>
+                  </div>
+                  <div class="addr__field">
+                    <label class="pt-label" for="addr-province-{{ address.id }}">{{ 'customer.state' | t }}</label>
+                    <input type="text" id="addr-province-{{ address.id }}" name="address[province]" class="pt-input" value="{{ address.province }}" autocomplete="address-level1">
+                  </div>
+                </div>
+                <div class="addr__field">
+                  <label class="pt-label" for="addr-phone-{{ address.id }}">{{ 'customer.phone' | t }}</label>
+                  <input type="tel" id="addr-phone-{{ address.id }}" name="address[phone]" class="pt-input" value="{{ address.phone }}" autocomplete="tel">
+                </div>
+                <label class="addr__check">
+                  <input type="checkbox" name="address[default]" value="1"{% if address == customer.default_address %} checked{% endif %}>
+                  <span>{{ 'customer.set_default' | t }}</span>
+                </label>
+                <div class="addr__formbtns">
+                  <button type="submit" class="pt-btn">{{ 'customer.update_address' | t }}</button>
+                  <button type="button" class="pt-btn--quiet" data-addr-cancel="{{ address.id }}">{{ 'customer.cancel' | t }}</button>
+                </div>
+              {% endform %}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <a href="{{ routes.account_url }}" class="pt-btn--quiet addr__back">&larr; Back to account</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var root = document.getElementById('shopify-section-{{ section.id }}');
+  if (!root) return;
+
+  /* Preselect saved countries */
+  Array.prototype.forEach.call(root.querySelectorAll('[data-country]'), function (sel) {
+    var d = sel.getAttribute('data-default');
+    if (!d) return;
+    for (var i = 0; i < sel.options.length; i++) {
+      if (sel.options[i].value === d || sel.options[i].text === d) { sel.selectedIndex = i; break; }
+    }
+  });
+
+  /* Edit toggles */
+  function setEdit(id, editing) {
+    var view = root.querySelector('#addr-view-' + id);
+    var form = root.querySelector('#addr-edit-' + id);
+    if (view) view.hidden = editing;
+    if (form) form.hidden = !editing;
+  }
+  Array.prototype.forEach.call(root.querySelectorAll('[data-addr-edit]'), function (btn) {
+    btn.addEventListener('click', function () { setEdit(btn.getAttribute('data-addr-edit'), true); });
+  });
+  Array.prototype.forEach.call(root.querySelectorAll('[data-addr-cancel]'), function (btn) {
+    btn.addEventListener('click', function () { setEdit(btn.getAttribute('data-addr-cancel'), false); });
+  });
+
+  /* New address toggle */
+  var newForm = root.querySelector('#addr-new');
+  Array.prototype.forEach.call(root.querySelectorAll('[data-addr-new-toggle]'), function (btn) {
+    btn.addEventListener('click', function () {
+      if (newForm) newForm.hidden = !newForm.hidden;
+    });
+  });
+
+  /* Delete confirmation */
+  Array.prototype.forEach.call(root.querySelectorAll('[data-confirm]'), function (btn) {
+    btn.addEventListener('click', function (e) {
+      if (!window.confirm(btn.getAttribute('data-confirm'))) e.preventDefault();
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Addresses",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "porcelain",
+          "label": "Porcelain"
+        },
+        {
+          "value": "sand",
+          "label": "Sand"
+        },
+        {
+          "value": "sage",
+          "label": "Sage"
+        },
+        {
+          "value": "blush",
+          "label": "Blush"
+        },
+        {
+          "value": "ink",
+          "label": "Ink"
+        }
+      ],
+      "default": "porcelain"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "info": "0 uses the theme default spacing."
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "info": "0 uses the theme default spacing."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Addresses"
+    }
+  ]
+}
+{% endschema %}
