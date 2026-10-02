@@ -1,0 +1,34 @@
+{%- comment -%} Pitriciacle · Wishlist drawer — localStorage-backed, items rendered by theme.js {%- endcomment -%}
+<div
+  class="pt-drawer"
+  id="WishlistDrawer"
+  role="dialog"
+  aria-modal="true"
+  aria-label="{{ 'wishlist.title' | t }}"
+  aria-hidden="true"
+  data-wishlist-drawer
+  data-empty-heading="{{ 'wishlist.empty_heading' | t | escape }}"
+  data-empty-text="{{ 'wishlist.empty_text' | t | escape }}"
+  data-empty-cta="{{ 'wishlist.continue_shopping' | t | escape }}"
+  data-move-to-cart="{{ 'wishlist.move_to_cart' | t | escape }}"
+  data-remove="{{ 'wishlist.remove_item' | t | escape }}">
+  <div class="pt-drawer__overlay" data-drawer-close></div>
+  <div class="pt-drawer__panel" data-trap-root tabindex="-1">
+    <div class="pt-drawer__head">
+      <span class="pt-drawer__title">{{ 'wishlist.title' | t }} (<span data-wishlist-count>0</span>)</span>
+      <button type="button" class="pt-icon-btn" data-drawer-close aria-label="{{ 'wishlist.close' | t }}">
+        {% render 'icons', icon: 'close' %}
+      </button>
+    </div>
+    <div class="pt-drawer__body">
+      <div data-wishlist-items></div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Wishlist drawer",
+  "settings": []
+}
+{% endschema %}
