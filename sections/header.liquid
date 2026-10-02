@@ -1,0 +1,130 @@
+<header
+  class="pt-header{% if section.settings.overlay_home and template.name == 'index' %} pt-header--overlay{% endif %}"
+  data-site-header
+  {% if section.settings.overlay_home and template.name == 'index' %}data-header-overlay{% endif %}
+  {% if section.settings.sticky == false %}style="position: static;"{% endif %}>
+  <div class="pt-container pt-header__inner">
+    <button
+      type="button"
+      class="pt-icon-btn pt-nav-toggle"
+      data-drawer-open="MobileNav"
+      aria-label="{{ 'general.header.open_menu' | t }}">
+      {% render 'icons', icon: 'menu' %}
+    </button>
+
+    <nav class="pt-header__nav" aria-label="{{ 'general.header.primary_nav' | t }}">
+      {%- if section.settings.menu != blank -%}
+        <ul>
+          {%- for link in section.settings.menu.links -%}
+            <li>
+              <a href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %}>{{ link.title }}</a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </nav>
+
+    <a href="{{ routes.root_url }}" class="pt-header__brand" aria-label="{{ shop.name }}">
+      {%- if settings.logo != blank -%}
+        <img
+          src="{{ settings.logo | image_url: width: 320 }}"
+          alt="{{ shop.name | escape }}"
+          width="160"
+          height="44"
+          loading="eager">
+      {%- else -%}
+        {{ section.settings.brand_name | default: 'Pitriciacle' | escape }}
+      {%- endif -%}
+    </a>
+
+    <div class="pt-header__actions">
+      {%- if section.settings.show_country_selector and localization.available_countries.size > 1 -%}
+        {%- form 'localization', id: 'HeaderCountryForm', class: 'pt-localization' -%}
+          <label class="pt-visually-hidden" for="HeaderCountrySelect">{{ 'general.localization.country_label' | t }}</label>
+          <select id="HeaderCountrySelect" name="country_code" class="pt-localization__select" data-country-select>
+            {%- for country in localization.available_countries -%}
+              <option value="{{ country.iso_code }}"{% if country.iso_code == localization.country.iso_code %} selected{% endif %}>
+                {{ country.name }} · {{ country.currency.iso_code }} {{ country.currency.symbol }}
+              </option>
+            {%- endfor -%}
+          </select>
+        {%- endform -%}
+      {%- endif -%}
+      {%- if section.settings.show_search -%}
+        <button
+          type="button"
+          class="pt-icon-btn"
+          data-drawer-open="SearchDrawer"
+          aria-label="{{ 'general.search.search' | t }}">
+          {% render 'icons', icon: 'search' %}
+        </button>
+      {%- endif -%}
+      {%- if section.settings.show_wishlist -%}
+        <button
+          type="button"
+          class="pt-icon-btn"
+          data-drawer-open="WishlistDrawer"
+          aria-label="{{ 'wishlist.open' | t }}">
+          {% render 'icons', icon: 'heart' %}
+          <span class="pt-cart-count" data-wishlist-count hidden>0</span>
+        </button>
+      {%- endif -%}
+      {%- if section.settings.show_account -%}
+        <a
+          href="{{ routes.account_url }}"
+          class="pt-icon-btn"
+          aria-label="{{ 'general.header.account' | t }}">
+          {% render 'icons', icon: 'account' %}
+        </a>
+      {%- endif -%}
+      <button
+        type="button"
+        class="pt-icon-btn"
+        data-drawer-open="CartDrawer"
+        aria-label="{{ 'general.cart.open_cart' | t }}">
+        {% render 'icons', icon: 'cart' %}
+        <span class="pt-cart-count" data-cart-count{% if cart.item_count == 0 %} hidden{% endif %}>{{ cart.item_count }}</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="pt-drawer" id="MobileNav" role="dialog" aria-modal="true" aria-label="{{ 'general.header.open_menu' | t }}" aria-hidden="true">
+  <div class="pt-drawer__overlay" data-drawer-close></div>
+  <div class="pt-drawer__panel pt-drawer__panel--left" data-trap-root tabindex="-1">
+    <div class="pt-drawer__head">
+      <span class="pt-drawer__title">{{ section.settings.brand_name | default: 'Pitriciacle' | escape }}</span>
+      <button type="button" class="pt-icon-btn" data-drawer-close aria-label="{{ 'general.header.close_menu' | t }}">
+        {% render 'icons', icon: 'close' %}
+      </button>
+    </div>
+    <div class="pt-drawer__body">
+      <nav class="pt-mobile-nav" aria-label="{{ 'general.header.primary_nav' | t }}">
+        {%- if section.settings.menu != blank -%}
+          {%- for link in section.settings.menu.links -%}
+            <a href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %}>{{ link.title }}</a>
+          {%- endfor -%}
+        {%- endif -%}
+        {%- if section.settings.show_account -%}
+          <a href="{{ routes.account_url }}">{{ 'general.header.account' | t }}</a>
+        {%- endif -%}
+      </nav>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
+    { "type": "checkbox", "id": "show_search", "label": "Show search", "default": true },
+    { "type": "checkbox", "id": "show_account", "label": "Show account", "default": true },
+    { "type": "checkbox", "id": "show_wishlist", "label": "Show wishlist", "default": true },
+    { "type": "checkbox", "id": "show_country_selector", "label": "Show country / currency selector", "default": true, "info": "Requires Shopify Markets with more than one market enabled." },
+    { "type": "text", "id": "brand_name", "label": "Brand name (shown when no logo uploaded)", "default": "Pitriciacle" },
+    { "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true },
+    { "type": "checkbox", "id": "overlay_home", "label": "Transparent over homepage hero", "default": true, "info": "Starts transparent with light text over the hero image, turning to frosted porcelain on scroll. Homepage only." }
+  ]
+}
+{% endschema %}
