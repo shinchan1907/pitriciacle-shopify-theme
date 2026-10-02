@@ -1,0 +1,190 @@
+{%- comment -%} Pitriciacle · Atelier stats — quiet numbers row {%- endcomment -%}
+
+<style>
+  #shopify-section-{{ section.id }} .stats { text-align: center; }
+  #shopify-section-{{ section.id }} .stats__head { max-width: 68rem; margin: 0 auto 5.2rem; }
+  #shopify-section-{{ section.id }} .stats__head .pt-h2 { margin-top: 1.2rem; }
+  #shopify-section-{{ section.id }} .stats__row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3.6rem 2rem;
+    max-width: 108rem;
+    margin: 0 auto;
+  }
+  #shopify-section-{{ section.id }} .stats__value {
+    font-family: var(--pt-serif);
+    font-weight: 300;
+    font-size: clamp(4rem, 7vw, 7.2rem);
+    line-height: 1;
+    color: var(--pt-ink);
+  }
+  #shopify-section-{{ section.id }} .stats__label {
+    margin-top: 1.2rem;
+    font-size: 1.25rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--pt-stone);
+    max-width: 24rem;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.7;
+  }
+  #shopify-section-{{ section.id }} .stats__cell { position: relative; padding: 0 1rem; }
+  @media (min-width: 750px) {
+    #shopify-section-{{ section.id }} .stats__row { grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+    #shopify-section-{{ section.id }} .stats__cell + .stats__cell::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 12%;
+      height: 76%; width: 1px;
+      background: rgba(201, 169, 106, 0.45);
+    }
+  }
+</style>
+
+<div class="pt-section stats pt-scheme--{{ section.settings.color_scheme | default: 'sand' }}"{% if section.settings.padding_top > 0 or section.settings.padding_bottom > 0 %} style="{% if section.settings.padding_top > 0 %}--pt-pad-top: {{ section.settings.padding_top }}px;{% endif %}{% if section.settings.padding_bottom > 0 %}--pt-pad-bottom: {{ section.settings.padding_bottom }}px;{% endif %}"{% endif %}>
+  <div class="pt-container">
+    <div class="stats__head">
+      {%- if section.settings.kicker != blank -%}
+        <p class="pt-kicker pt-reveal">{{ section.settings.kicker | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="pt-h2 pt-reveal" style="--pt-reveal-delay: 0.1s;">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+    </div>
+    <div class="stats__row">
+      {%- for block in section.blocks -%}
+        <div class="stats__cell pt-reveal" style="--pt-reveal-delay: {{ forloop.index0 | times: 12 | divided_by: 100.0 }}s;" {{ block.shopify_attributes }}>
+          <p class="stats__value">{{ block.settings.value | escape }}</p>
+          <p class="stats__label">{{ block.settings.label | escape }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Atelier stats",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Kicker",
+      "default": "By the numbers"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Patience, measured"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "porcelain",
+          "label": "Porcelain"
+        },
+        {
+          "value": "sand",
+          "label": "Sand"
+        },
+        {
+          "value": "sage",
+          "label": "Sage"
+        },
+        {
+          "value": "blush",
+          "label": "Blush"
+        },
+        {
+          "value": "ink",
+          "label": "Ink"
+        }
+      ],
+      "default": "sand"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "info": "0 uses the theme default spacing."
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "info": "0 uses the theme default spacing."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Statistic",
+      "settings": [
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "120+"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "artisan hours in every hand-knotted rug"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Atelier stats",
+      "blocks": [
+        {
+          "type": "stat",
+          "settings": {
+            "value": "120+",
+            "label": "artisan hours in every hand-knotted rug"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "14",
+            "label": "hand processes shape each brass piece"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "3",
+            "label": "generations of craft knowledge"
+          }
+        },
+        {
+          "type": "stat",
+          "settings": {
+            "value": "100%",
+            "label": "hand-finished, never machine-made"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
