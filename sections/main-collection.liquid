@@ -1,0 +1,306 @@
+{%- comment -%} Pitriciacle · Main collection — header, sort, filters, grid, pagination {%- endcomment -%}
+
+<style>
+  #shopify-section-{{ section.id }} .mcoll__crumbs { margin-bottom: 1.5rem; }
+  #shopify-section-{{ section.id }} .mcoll__head { text-align: center; max-width: 64ch; margin: 0 auto 2.5rem; }
+  #shopify-section-{{ section.id }} .mcoll__desc { margin-top: 1.25rem; }
+  #shopify-section-{{ section.id }} .mcoll__desc p:first-child { margin-top: 0; }
+  #shopify-section-{{ section.id }} .mcoll__count { margin-top: 1.25rem; }
+  #shopify-section-{{ section.id }} .mcoll__toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 2rem; padding-bottom: 1.25rem; border-bottom: 1px solid rgba(138,129,120,0.35); }
+  #shopify-section-{{ section.id }} .mcoll__filters-toggle { display: inline-flex; align-items: center; gap: 0.8rem; }
+  #shopify-section-{{ section.id }} .mcoll__filters-toggle svg { width: 1.6rem; height: 1.6rem; }
+  #shopify-section-{{ section.id }} .mcoll__filters-head { display: none; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
+  #shopify-section-{{ section.id }} .mcoll__filters-title { font-family: var(--pt-serif); font-size: 2.4rem; font-weight: 500; }
+  @media (max-width: 989px) {
+    #shopify-section-{{ section.id }} .mcoll__filters {
+      position: fixed; top: 0; left: 0; z-index: 120;
+      width: min(38rem, 88vw); height: 100dvh; overflow-y: auto;
+      background: var(--pt-porcelain); padding: 2rem 2.4rem 4rem;
+      transform: translateX(-104%); transition: transform 0.5s var(--pt-ease);
+      box-shadow: 2rem 0 6rem rgba(43, 38, 32, 0.14);
+    }
+    #shopify-section-{{ section.id }} .mcoll__filters.is-open { transform: none; }
+    #shopify-section-{{ section.id }} .mcoll__filters-head { display: flex; }
+    #shopify-section-{{ section.id }} .mcoll__filters-scrim {
+      position: fixed; inset: 0; z-index: 115;
+      background: rgba(43, 38, 32, 0.45);
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s;
+    }
+    #shopify-section-{{ section.id }} .mcoll__filters-scrim.is-open { opacity: 1; visibility: visible; }
+  }
+  @media (min-width: 990px) {
+    #shopify-section-{{ section.id }} .mcoll__filters-toggle { display: none; }
+    #shopify-section-{{ section.id }} .mcoll__filters-scrim { display: none; }
+  }
+  #shopify-section-{{ section.id }} .mcoll__sort { display: flex; align-items: center; gap: 0.75rem; }
+  #shopify-section-{{ section.id }} .mcoll__sort select { width: auto; }
+  #shopify-section-{{ section.id }} .mcoll__layout { display: grid; grid-template-columns: 1fr; gap: 2.5rem; }
+  #shopify-section-{{ section.id }} .mcoll__filters fieldset { border: 0; padding: 0; margin: 0 0 1.75rem; }
+  #shopify-section-{{ section.id }} .mcoll__filters legend { padding: 0; margin-bottom: 0.75rem; }
+  #shopify-section-{{ section.id }} .mcoll__check { display: flex; align-items: flex-start; gap: 0.6rem; margin-bottom: 0.6rem; cursor: pointer; line-height: 1.5; }
+  #shopify-section-{{ section.id }} .mcoll__check input { margin-top: 0.3rem; accent-color: var(--pt-champagne); }
+  #shopify-section-{{ section.id }} .mcoll__pricerow { display: flex; align-items: center; gap: 0.6rem; }
+  #shopify-section-{{ section.id }} .mcoll__pricerow input { width: 100%; }
+  #shopify-section-{{ section.id }} .mcoll__apply { width: 100%; }
+  #shopify-section-{{ section.id }} .mcoll__pills { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin-bottom: 1.75rem; }
+  #shopify-section-{{ section.id }} .mcoll__pill { display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid rgba(43,38,32,0.25); border-radius: 999px; padding: 0.4rem 0.9rem; font-size: 0.85rem; text-decoration: none; color: var(--pt-ink); }
+  #shopify-section-{{ section.id }} .mcoll__pill svg { width: 0.8rem; height: 0.8rem; }
+  #shopify-section-{{ section.id }} .mcoll__pill:hover { border-color: var(--pt-champagne); }
+  #shopify-section-{{ section.id }} .mcoll__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem 1rem; }
+  #shopify-section-{{ section.id }} .mcoll__pages { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0.5rem; margin-top: 3.5rem; }
+  #shopify-section-{{ section.id }} .mcoll__pages a, #shopify-section-{{ section.id }} .mcoll__pages span { min-width: 2.5rem; height: 2.5rem; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; color: var(--pt-ink); border: 1px solid transparent; font-size: 0.95rem; padding: 0 0.5rem; }
+  #shopify-section-{{ section.id }} .mcoll__pages a:hover { border-color: var(--pt-champagne); }
+  #shopify-section-{{ section.id }} .mcoll__pages .is-current { border-color: var(--pt-ink); }
+  #shopify-section-{{ section.id }} .mcoll__pages .is-prevnext { border-color: rgba(43,38,32,0.25); gap: 0.5rem; }
+  #shopify-section-{{ section.id }} .mcoll__pages svg { width: 0.9rem; height: 0.9rem; }
+  #shopify-section-{{ section.id }} .mcoll__empty { text-align: center; padding: 4rem 0; max-width: 52ch; margin: 0 auto; }
+  #shopify-section-{{ section.id }} .mcoll__empty h2 { margin: 1rem 0; }
+  #shopify-section-{{ section.id }} .mcoll__empty .pt-btn--outline { margin-top: 1.5rem; display: inline-block; }
+  @media (min-width: 750px) {
+    #shopify-section-{{ section.id }} .mcoll__grid { grid-template-columns: repeat(3, 1fr); gap: 2rem 1.5rem; }
+  }
+  @media (min-width: 990px) {
+    #shopify-section-{{ section.id }} .mcoll__layout--filters { grid-template-columns: 15rem 1fr; gap: 3.5rem; align-items: start; }
+    #shopify-section-{{ section.id }} .mcoll__filters { position: sticky; top: 6.5rem; }
+  }
+</style>
+
+<div class="pt-section pt-scheme--{{ section.settings.color_scheme | default: 'porcelain' }}"{% if section.settings.padding_top > 0 or section.settings.padding_bottom > 0 %} style="{% if section.settings.padding_top > 0 %}--pt-pad-top: {{ section.settings.padding_top }}px;{% endif %}{% if section.settings.padding_bottom > 0 %}--pt-pad-bottom: {{ section.settings.padding_bottom }}px;{% endif %}"{% endif %}>
+  <div class="pt-container">
+    <div class="mcoll__crumbs">{% render 'breadcrumbs' %}</div>
+
+    <header class="mcoll__head pt-reveal">
+      <h1 class="pt-h1">{{ collection.title | escape }}</h1>
+      {%- if collection.description != blank -%}
+        <div class="pt-lede mcoll__desc">{{ collection.description }}</div>
+      {%- endif -%}
+      <p class="pt-kicker mcoll__count">
+        {%- if collection.products_count == 1 -%}{{ 'collection.one_piece' | t }}{%- else -%}{{ 'collection.pieces_count' | t: count: collection.products_count }}{%- endif -%}
+      </p>
+    </header>
+
+    {%- assign show_filters = false -%}
+    {%- if section.settings.show_filters and collection.filters.size > 0 -%}
+      {%- assign show_filters = true -%}
+    {%- endif -%}
+
+    {%- if section.settings.show_sort or show_filters -%}
+      <div class="mcoll__toolbar">
+        {%- if show_filters -%}
+          <button type="button" class="pt-btn pt-btn--outline mcoll__filters-toggle" data-filters-open aria-expanded="false" aria-controls="mcoll-filters-{{ section.id }}">
+            {% render 'icons', icon: 'menu' %}{{ 'collection.filters' | t }}
+          </button>
+        {%- endif -%}
+        {%- if section.settings.show_sort -%}
+        <form method="get" action="{{ collection.url }}" class="mcoll__sort">
+          {%- for filter in collection.filters -%}
+            {%- for value in filter.active_values -%}
+              <input type="hidden" name="{{ value.param_name }}" value="{{ value.value }}">
+            {%- endfor -%}
+            {%- if filter.type == 'price_range' -%}
+              {%- if filter.min_value.value -%}
+                <input type="hidden" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}">
+              {%- endif -%}
+              {%- if filter.max_value.value -%}
+                <input type="hidden" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}">
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+          <label class="pt-label" for="mcoll-sort-{{ section.id }}">{{ 'collection.sort_by' | t }}</label>
+          <select id="mcoll-sort-{{ section.id }}" name="sort_by" class="pt-input" onchange="this.form.submit()">
+            {%- for option in collection.sort_options -%}
+              <option value="{{ option.value }}"{% if option.value == collection.sort_by %} selected{% endif %}>{{ option.name | escape }}</option>
+            {%- endfor -%}
+          </select>
+        </form>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- assign has_active = false -%}
+    {%- for filter in collection.filters -%}
+      {%- if filter.active_values.size > 0 -%}{%- assign has_active = true -%}{%- endif -%}
+      {%- if filter.type == 'price_range' -%}
+        {%- if filter.min_value.value or filter.max_value.value -%}{%- assign has_active = true -%}{%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- if has_active -%}
+      <div class="mcoll__pills" aria-label="{{ 'collection.active_filters' | t }}">
+        {%- for filter in collection.filters -%}
+          {%- for value in filter.active_values -%}
+            <a href="{{ value.url_to_remove }}" class="mcoll__pill" aria-label="{{ 'collection.remove_filter' | t }}: {{ value.label | escape }}">{{ value.label | escape }} {% render 'icons', icon: 'close' %}</a>
+          {%- endfor -%}
+          {%- if filter.type == 'price_range' -%}
+            {%- if filter.min_value.value or filter.max_value.value -%}
+              <a href="{{ filter.url_to_remove }}" class="mcoll__pill" aria-label="{{ 'collection.remove_price_filter' | t }}">{{ 'collection.price' | t }} {% render 'icons', icon: 'close' %}</a>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+        <a href="{{ collection.url }}" class="pt-btn--quiet">{{ 'collection.clear_all' | t }}</a>
+      </div>
+    {%- endif -%}
+
+    <div class="mcoll__layout{% if show_filters %} mcoll__layout--filters{% endif %}">
+      {%- if show_filters -%}
+        <form method="get" action="{{ collection.url }}" class="mcoll__filters" id="mcoll-filters-{{ section.id }}" aria-label="{{ 'collection.filters' | t }}">
+          <div class="mcoll__filters-head">
+            <span class="mcoll__filters-title">{{ 'collection.filters' | t }}</span>
+            <button type="button" class="pt-icon-btn" data-filters-close aria-label="{{ 'collection.close_filters' | t }}">{% render 'icons', icon: 'close' %}</button>
+          </div>
+          {%- if collection.sort_by -%}
+            <input type="hidden" name="sort_by" value="{{ collection.sort_by }}">
+          {%- endif -%}
+          {%- for filter in collection.filters -%}
+            {%- case filter.type -%}
+              {%- when 'boolean', 'list' -%}
+                <fieldset>
+                  <legend class="pt-label">{{ filter.label | escape }}</legend>
+                  {%- for value in filter.values -%}
+                    <label class="mcoll__check">
+                      <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}"{% if value.active %} checked{% endif %}{% if value.count == 0 and value.active == false %} disabled{% endif %}>
+                      <span>{{ value.label | escape }} <span class="pt-muted">({{ value.count }})</span></span>
+                    </label>
+                  {%- endfor -%}
+                </fieldset>
+              {%- when 'price_range' -%}
+                <fieldset>
+                  <legend class="pt-label">{{ filter.label | escape }}</legend>
+                  <div class="mcoll__pricerow">
+                    <input type="number" class="pt-input" name="{{ filter.min_value.param_name }}"{% if filter.min_value.value %} value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"{% endif %} placeholder="{{ 'collection.min_price' | t }}" min="0" aria-label="{{ 'collection.min_price_label' | t }}">
+                    <span class="pt-muted" aria-hidden="true">&ndash;</span>
+                    <input type="number" class="pt-input" name="{{ filter.max_value.param_name }}"{% if filter.max_value.value %} value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"{% endif %} placeholder="{{ 'collection.max_price' | t }}" min="0" aria-label="{{ 'collection.max_price_label' | t }}">
+                  </div>
+                </fieldset>
+            {%- endcase -%}
+          {%- endfor -%}
+          <button type="submit" class="pt-btn mcoll__apply">{{ 'collection.apply_filters' | t }}</button>
+        </form>
+        <div class="mcoll__filters-scrim" data-filters-scrim></div>
+      {%- endif -%}
+
+      <div class="mcoll__results">
+        {% paginate collection.products by section.settings.products_per_page %}
+          {%- if collection.products.size > 0 -%}
+            <div class="mcoll__grid">
+              {%- for product in collection.products -%}
+                {% render 'product-card', product: product %}
+              {%- endfor -%}
+            </div>
+          {%- else -%}
+            <div class="mcoll__empty">
+              <p class="pt-kicker">{{ 'collection.no_matches_kicker' | t }}</p>
+              <h2 class="pt-h2">{{ 'collection.no_matches_heading' | t }}</h2>
+              <p class="pt-body pt-muted">{{ 'collection.no_matches_text' | t }}</p>
+              <a href="{{ collection.url }}" class="pt-btn--outline">{{ 'collection.clear_filters' | t }}</a>
+            </div>
+          {%- endif -%}
+
+          {%- if paginate.pages > 1 -%}
+            <nav class="mcoll__pages" aria-label="{{ 'collection.pagination' | t }}">
+              {%- if paginate.previous -%}
+                <a href="{{ paginate.previous.url }}" class="is-prevnext" aria-label="{{ 'collection.previous_page' | t }}">{% render 'icons', icon: 'arrow-left' %}<span>{{ 'collection.prev' | t }}</span></a>
+              {%- endif -%}
+              {%- for part in paginate.parts -%}
+                {%- if part.is_link -%}
+                  <a href="{{ part.url }}" aria-label="{{ 'collection.go_to_page' | t }} {{ part.title }}">{{ part.title }}</a>
+                {%- elsif part.title == '&hellip;' -%}
+                  <span aria-hidden="true">{{ part.title }}</span>
+                {%- else -%}
+                  <span class="is-current" aria-current="page">{{ part.title }}</span>
+                {%- endif -%}
+              {%- endfor -%}
+              {%- if paginate.next -%}
+                <a href="{{ paginate.next.url }}" class="is-prevnext" aria-label="{{ 'collection.next_page' | t }}"><span>{{ 'collection.next' | t }}</span>{% render 'icons', icon: 'arrow-right' %}</a>
+              {%- endif -%}
+            </nav>
+          {%- endif -%}
+        {% endpaginate %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_filters",
+      "label": "Show filters",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sort",
+      "label": "Show sort dropdown",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        {
+          "value": "porcelain",
+          "label": "Porcelain"
+        },
+        {
+          "value": "sand",
+          "label": "Sand"
+        },
+        {
+          "value": "sage",
+          "label": "Sage"
+        },
+        {
+          "value": "blush",
+          "label": "Blush"
+        },
+        {
+          "value": "ink",
+          "label": "Ink"
+        }
+      ],
+      "default": "porcelain"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "info": "0 uses the theme default spacing."
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0,
+      "info": "0 uses the theme default spacing."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection"
+    }
+  ]
+}
+{% endschema %}
