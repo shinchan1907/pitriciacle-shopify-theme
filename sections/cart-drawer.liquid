@@ -1,0 +1,219 @@
+{%- comment -%} Pitriciacle · Cart drawer — AJAX line items, shipping progress, gift note, upsells {%- endcomment -%}
+{%- liquid
+  assign threshold_cents = section.settings.free_shipping_threshold | default: 15000 | times: 100
+  assign cart_ids = ''
+  for item in cart.items
+    assign cart_ids = cart_ids | append: item.product_id | append: ','
+  endfor
+-%}
+<div class="pt-drawer" id="CartDrawer" role="dialog" aria-modal="true" aria-label="{{ 'general.cart.title' | t }}" aria-hidden="true">
+  <div class="pt-drawer__overlay" data-drawer-close></div>
+  <div class="pt-drawer__panel" data-trap-root tabindex="-1">
+    <div class="pt-drawer__head">
+      <span class="pt-drawer__title">{{ 'general.cart.title' | t }} (<span data-cart-count>{{ cart.item_count }}</span>)</span>
+      <button type="button" class="pt-icon-btn" data-drawer-close aria-label="{{ 'general.cart.close_cart' | t }}">
+        {% render 'icons', icon: 'close' %}
+      </button>
+    </div>
+
+    <div class="pt-drawer__body" data-cart-drawer-body>
+      <div data-cart-items>
+        {%- if cart.item_count == 0 -%}
+          <div class="pt-cart-empty">
+            <h3 class="pt-h3">{{ 'general.cart.empty_heading' | t }}</h3>
+            <p class="pt-muted">{{ 'general.cart.empty_text' | t }}</p>
+            <p style="margin-top: 2rem;"><a class="pt-btn" href="{{ routes.all_products_collection_url }}">{{ 'general.cart.continue_shopping' | t }}</a></p>
+          </div>
+        {%- else -%}
+          {%- for item in cart.items -%}
+            <div class="pt-cart-item" data-line-key="{{ item.key }}">
+              <div class="pt-cart-item__media">
+                {%- if item.image -%}
+                  <img
+                    src="{{ item.image | image_url: width: 200 }}"
+                    alt="{{ item.image.alt | default: item.product.title | escape }}"
+                    loading="lazy"
+                    width="200"
+                    height="200">
+                {%- endif -%}
+              </div>
+              <div>
+                <h3 class="pt-cart-item__title"><a href="{{ item.url }}">{{ item.product.title }}</a></h3>
+                {%- unless item.variant.title == 'Default Title' -%}
+                  <p class="pt-cart-item__variant">{{ item.variant.title }}</p>
+                {%- endunless -%}
+                <div class="pt-cart-item__row">
+                  <div class="pt-qty" data-qty-stepper>
+                    <button type="button" data-qty="minus" aria-label="{{ 'general.cart.decrease_quantity' | t }}">{% render 'icons', icon: 'minus' %}</button>
+                    <input type="number" value="{{ item.quantity }}" min="1" aria-label="{{ 'general.cart.quantity' | t }}" data-qty-input data-line-key="{{ item.key }}">
+                    <button type="button" data-qty="plus" aria-label="{{ 'general.cart.increase_quantity' | t }}">{% render 'icons', icon: 'plus' %}</button>
+                  </div>
+                  <span class="pt-price">{{ item.line_price | money }}</span>
+                </div>
+                <button type="button" class="pt-cart-item__remove" data-cart-remove="{{ item.key }}">{{ 'general.cart.remove' | t }}</button>
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.show_upsells and section.settings.upsell_collection != blank -%}
+        {%- assign upsell_shown = 0 -%}
+        {%- capture upsell_html -%}
+          {%- for up in section.settings.upsell_collection.products -%}
+            {%- assign up_id = up.id | append: ',' -%}
+            {%- if cart_ids contains up_id -%}{%- continue -%}{%- endif -%}
+            {%- if up.available and up.selected_or_first_available_variant -%}
+              <div class="pt-upsell__item">
+                <a href="{{ up.url }}" class="pt-upsell__media" aria-label="{{ up.title | escape }}">
+                  {%- if up.featured_media -%}
+                    <img src="{{ up.featured_media | image_url: width: 300 }}" alt="{{ up.featured_media.alt | default: up.title | escape }}" loading="lazy" width="300" height="300">
+                  {%- endif -%}
+                </a>
+                <p class="pt-upsell__name"><a href="{{ up.url }}">{{ up.title }}</a></p>
+                <p class="pt-upsell__price">{{ up.price | money }}</p>
+                <button type="button" class="pt-btn pt-btn--full" data-add-to-cart="{{ up.selected_or_first_available_variant.id }}" aria-label="{{ 'products.product.add_to_cart' | t }}: {{ up.title | escape }}">{{ 'products.product.add_to_cart' | t }}</button>
+              </div>
+              {%- assign upsell_shown = upsell_shown | plus: 1 -%}
+              {%- if upsell_shown >= section.settings.upsell_count -%}{%- break -%}{%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endcapture -%}
+        {%- if upsell_shown > 0 -%}
+          <div class="pt-upsell" data-cart-upsells>
+            <h3 class="pt-upsell__title">{{ section.settings.upsell_heading | escape }}</h3>
+            <div class="pt-upsell__grid">{{ upsell_html }}</div>
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+
+    <div class="pt-drawer__foot" data-cart-drawer-foot{% if cart.item_count == 0 %} style="display: none;"{% endif %}>
+      {%- if section.settings.show_gift_suite -%}
+        {%- assign wrap_product = all_products[section.settings.gift_wrap_product] -%}
+        <div class="pt-gift-suite" data-gift-suite data-wrap-handle="{{ wrap_product.handle | default: '' }}">
+          <label class="pt-gift-suite__toggle">
+            <input type="checkbox" class="pt-visually-hidden" data-gift-toggle>
+            <span class="pt-gift-suite__box" aria-hidden="true">{% render 'icons', icon: 'check' %}</span>
+            <span class="pt-gift-suite__label">
+              <strong>{{ 'general.cart.make_it_gift' | t }}</strong>
+              {%- if wrap_product -%}
+                {%- capture wrap_price -%}{{ wrap_product.price | money }}{%- endcapture -%}
+                <span class="pt-muted">{{ 'general.cart.gift_wrap_price_html' | t: price: wrap_price }}</span>
+              {%- else -%}
+                <span class="pt-muted">{{ 'general.cart.gift_wrap_later' | t }}</span>
+              {%- endif -%}
+            </span>
+            {% render 'icons', icon: 'gift' %}
+          </label>
+          <div class="pt-gift-suite__fields" data-gift-fields hidden>
+            <label class="pt-label" for="CartDrawer-gift-message">{{ 'general.cart.gift_message_label' | t }}</label>
+            <textarea
+              id="CartDrawer-gift-message"
+              class="pt-textarea"
+              data-gift-message
+              rows="3"
+              placeholder="{{ 'general.cart.gift_message_placeholder' | t }}">{{ cart.attributes['Gift message'] | escape }}</textarea>
+          </div>
+        </div>
+      {%- endif -%}
+      {%- if section.settings.show_gift_note -%}
+        <div class="pt-gift-note">
+          <label class="pt-label" for="CartDrawer-gift-note">{{ 'general.cart.gift_note_label' | t }}</label>
+          <textarea
+            id="CartDrawer-gift-note"
+            class="pt-textarea"
+            data-gift-note
+            placeholder="{{ 'general.cart.gift_note_placeholder' | t }}">{{ cart.note | escape }}</textarea>
+        </div>
+      {%- endif -%}
+      <div class="pt-shipping-progress" data-shipping-progress data-shipping-threshold="{{ threshold_cents }}">
+        <p class="pt-shipping-progress__label" data-shipping-label>
+          {%- if cart.total_price >= threshold_cents -%}
+            {{ 'general.cart.free_shipping_unlocked' | t }}
+          {%- else -%}
+            {%- capture remaining_money -%}{{ threshold_cents | minus: cart.total_price | money }}{%- endcapture -%}
+            {{ 'general.cart.free_shipping_progress_html' | t: amount: remaining_money }}
+          {%- endif -%}
+        </p>
+        <div class="pt-shipping-progress__bar" aria-hidden="true">
+          <div class="pt-shipping-progress__fill" data-shipping-fill style="width: {{ cart.total_price | times: 100 | divided_by: threshold_cents | at_most: 100 }}%;"></div>
+        </div>
+      </div>
+      <div class="pt-cart-subtotal">
+        <span>{{ 'general.cart.subtotal' | t }}</span>
+        <strong data-cart-subtotal>{{ cart.total_price | money }}</strong>
+      </div>
+      <a href="{{ routes.checkout_url }}" class="pt-btn pt-btn--full">{{ 'general.cart.checkout' | t }}</a>
+      <p class="pt-cart-note">{{ 'general.cart.taxes_note' | t }}</p>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Cart drawer",
+  "settings": [
+    {
+      "type": "number",
+      "id": "free_shipping_threshold",
+      "label": "Free shipping threshold (₹)",
+      "default": 15000,
+      "info": "Progress bar completes at this cart value."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_gift_note",
+      "label": "Show gift note field",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Gifting suite"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_gift_suite",
+      "label": "Show gifting suite",
+      "default": true,
+      "info": "Adds a “Make it a gift” toggle with optional gift-wrap product and gift message."
+    },
+    {
+      "type": "product",
+      "id": "gift_wrap_product",
+      "label": "Gift wrap product",
+      "info": "Create a product (e.g. “Signature gift wrap”, ₹295). Added to the cart when the shopper ticks “Make it a gift”. Leave empty to capture only the gift message."
+    },
+    {
+      "type": "header",
+      "content": "Upsells"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_upsells",
+      "label": "Show upsells",
+      "default": true
+    },
+    {
+      "type": "collection",
+      "id": "upsell_collection",
+      "label": "Upsell collection"
+    },
+    {
+      "type": "range",
+      "id": "upsell_count",
+      "label": "Upsells to show",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "text",
+      "id": "upsell_heading",
+      "label": "Upsell heading",
+      "default": "You may also admire"
+    }
+  ]
+}
+{% endschema %}
