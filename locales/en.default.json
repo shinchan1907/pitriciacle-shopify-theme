@@ -1,0 +1,313 @@
+{
+  "accessibility": {
+    "link_messages": {
+      "new_window": "Opens in a new window."
+    },
+    "refresh_page": "Choosing a selection results in a full page refresh.",
+    "skip_to_text": "Skip to content"
+  },
+  "collection": {
+    "active_filters": "Active filters",
+    "apply_filters": "Apply filters",
+    "clear_all": "Clear all",
+    "clear_filters": "Clear all filters",
+    "close_filters": "Close filters",
+    "filters": "Filters",
+    "go_to_page": "Go to page",
+    "max_price": "Max",
+    "max_price_label": "Maximum price",
+    "min_price": "Min",
+    "min_price_label": "Minimum price",
+    "next": "Next",
+    "next_page": "Next page",
+    "no_matches_heading": "No pieces match those filters",
+    "no_matches_kicker": "Nothing here yet",
+    "no_matches_text": "Try loosening a filter or two — beautiful things are rarely narrow.",
+    "one_piece": "1 piece",
+    "pagination": "Pagination",
+    "pieces_count": "{{ count }} pieces",
+    "prev": "Prev",
+    "previous_page": "Previous page",
+    "price": "Price",
+    "remove_filter": "Remove filter",
+    "remove_price_filter": "Remove price filter",
+    "sort_by": "Sort by"
+  },
+  "contact": {
+    "form": {
+      "email": "Email",
+      "message": "Message",
+      "name": "Name",
+      "phone": "Phone (optional)",
+      "send": "Send message",
+      "success": "Thank you — your message has reached the atelier. We reply within two working days."
+    }
+  },
+  "general": {
+    "breadcrumbs": {
+      "cart": "Cart",
+      "home": "Home",
+      "label": "Breadcrumbs",
+      "search": "Search"
+    },
+    "cart": {
+      "checkout": "Checkout",
+      "close_cart": "Close cart",
+      "continue_shopping": "Continue shopping",
+      "decrease_quantity": "Decrease quantity",
+      "empty_heading": "Your cart is empty",
+      "empty_text": "Beautiful rooms begin with a single object.",
+      "free_shipping_progress_html": "You are <strong>{{ amount }}</strong> away from complimentary shipping",
+      "free_shipping_unlocked": "Complimentary shipping unlocked",
+      "gift_note_label": "Add a gift note",
+      "gift_note_placeholder": "Your message, handwritten on our card…",
+      "increase_quantity": "Increase quantity",
+      "open_cart": "Open cart",
+      "quantity": "Quantity",
+      "remove": "Remove",
+      "subtotal": "Subtotal",
+      "taxes_note": "Shipping and taxes calculated at checkout.",
+      "title": "Your cart",
+      "make_it_gift": "Make it a gift",
+      "gift_wrap_price_html": "Signature gift wrap · {{ price }}",
+      "gift_wrap_later": "We will wrap it beautifully",
+      "gift_message_label": "Gift message",
+      "gift_message_placeholder": "Your message, handwritten on our card…"
+    },
+    "footer": {
+      "payment_methods": "Accepted payment methods",
+      "instagram": "Instagram",
+      "pinterest": "Pinterest"
+    },
+    "header": {
+      "account": "Account",
+      "close_menu": "Close menu",
+      "open_menu": "Open menu",
+      "primary_nav": "Primary"
+    },
+    "scroll": "Scroll",
+    "search": {
+      "close_search": "Close search",
+      "placeholder": "Search mirrors, lamps, rugs, brass…",
+      "popular": "Popular right now",
+      "popular_terms": "Mirror,Lamp,Rug,Brass,Copper",
+      "search": "Search"
+    },
+    "localization": {
+      "country_label": "Country / currency"
+    }
+  },
+  "newsletter": {
+    "button": "Subscribe",
+    "footer_heading": "Letters from the atelier",
+    "footer_text": "New pieces and private previews, once a month.",
+    "label": "Email address",
+    "placeholder": "Your email address",
+    "success": "Welcome to the inner circle — your first letter is on its way."
+  },
+  "page_404": {
+    "home_button": "Back to home",
+    "kicker": "Lost your way",
+    "default_heading": "This page has wandered off",
+    "default_subtext": "The page you are looking for has moved, or never existed. The atelier, however, is right where you left it."
+  },
+  "password": {
+    "button": "Enter store",
+    "email_label": "Email address",
+    "email_placeholder": "Your email address",
+    "heading": "Something beautiful is being prepared",
+    "notify_text": "Leave your email and we will write the moment the doors open.",
+    "success": "Thank you — you are on the list."
+  },
+  "products": {
+    "details": {
+      "artisan_note": "Artisan note",
+      "care": "Care",
+      "craft_story": "Craft story",
+      "dimensions": "Dimensions",
+      "material": "Material",
+      "weight": "Weight"
+    },
+    "product": {
+      "add_to_bag": "Add to bag",
+      "add_to_cart": "Add to cart",
+      "added_to_bag": "Added to bag",
+      "adding": "Adding…",
+      "badge_bestseller": "Bestseller",
+      "badge_new": "New",
+      "close_quick_view": "Close quick view",
+      "decrease_quantity": "Decrease quantity",
+      "increase_quantity": "Increase quantity",
+      "on_sale": "Sale",
+      "product_images": "Product images",
+      "quantity": "Quantity",
+      "quick_view": "Quick view",
+      "view_image_of": "View image {{ index }} of {{ count }}",
+      "sold_out": "Sold out",
+      "view_full_details": "View full details",
+      "pre_order": "Pre-order"
+    },
+    "recently_viewed": {
+      "heading": "Recently viewed"
+    },
+    "trust": {
+      "crafted_text": "Made by hand in small batches",
+      "crafted_title": "Handcrafted",
+      "returns_text": "7-day returns, no questions asked",
+      "returns_title": "Easy returns",
+      "shipping_text": "Complimentary insured shipping across India",
+      "shipping_title": "Insured shipping"
+    },
+    "back_in_stock": {
+      "heading": "Notify me when available",
+      "text": "Leave your email and we will write the moment this piece returns.",
+      "email_label": "Email address",
+      "email_placeholder": "Email address",
+      "button": "Notify me",
+      "success": "You are on the list — we will write the moment it returns."
+    },
+    "made_to_order": {
+      "badge": "Made to order"
+    },
+    "concierge": {
+      "button": "Speak to our stylist",
+      "kicker": "Concierge",
+      "title": "Speak to our stylist",
+      "text": "Considering this piece for your home? Share your details and our stylist will call you back with guidance on scale, placement and finish.",
+      "close": "Close",
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "message": "Message",
+      "message_prefill": "I am interested in the {{ product }}. Please call me back.",
+      "send": "Send enquiry",
+      "success": "Thank you — our stylist will call you back shortly."
+    },
+    "complete_room": {
+      "total": "Total",
+      "add_selected": "Add selected to bag"
+    }
+  },
+  "sections": {
+    "shop_the_look": {
+      "view_piece": "View piece",
+      "view_product": "View product"
+    }
+  },
+  "search": {
+    "products": "Products",
+    "collections": "Collections",
+    "pages": "Pages",
+    "view_all": "View all results",
+    "no_results": "No matches — try “mirror”, “lamp” or “rug”.",
+    "browse_all": "Browse everything"
+  },
+  "customer": {
+    "welcome_back": "Welcome back",
+    "sign_in": "Sign in",
+    "email": "Email",
+    "password": "Password",
+    "forgot_password": "Password recovery",
+    "reset_password": "Reset password",
+    "submit": "Submit",
+    "back_to_sign_in": "Back to sign in",
+    "create_account": "Create an account",
+    "join_atelier": "Join the atelier",
+    "first_name": "First name",
+    "last_name": "Last name",
+    "account": "Account",
+    "addresses": "Addresses",
+    "new_address": "New address",
+    "add_new_address": "Add a new address",
+    "add_address": "Add address",
+    "update_address": "Update address",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "set_default": "Set as default address",
+    "default_address": "Default",
+    "company": "Company",
+    "address": "Address",
+    "city": "City",
+    "state": "State",
+    "zip": "PIN code",
+    "phone": "Phone",
+    "country": "Country",
+    "account_details": "Account details",
+    "order_history": "Order history",
+    "log_out": "Log out",
+    "view_addresses": "View addresses",
+    "order": "Order",
+    "date": "Date",
+    "payment": "Payment",
+    "fulfilment": "Fulfilment",
+    "total": "Total",
+    "subtotal": "Subtotal",
+    "quantity": "Quantity",
+    "price": "Price",
+    "item": "Item",
+    "items": "Items",
+    "discounts": "Discounts",
+    "cancelled": "Cancelled",
+    "totals": "Totals",
+    "billing_address": "Billing address",
+    "shipping_address": "Shipping address"
+  },
+  "article": {
+    "more_articles": "More articles",
+    "newer": "Newer",
+    "older": "Older",
+    "filed_under": "Filed under"
+  },
+  "cart_page": {
+    "title": "Shopping bag",
+    "empty_heading": "Your bag is empty",
+    "explore": "Explore the collection",
+    "update": "Update bag",
+    "order_summary": "Order summary",
+    "summary": "Summary",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "checkout": "Checkout",
+    "taxes_note": "Shipping and taxes calculated at checkout.",
+    "continue_shopping": "Continue shopping"
+  },
+  "blog": {
+    "journal": "Journal",
+    "all_entries": "All journal entries"
+  },
+  "policy": {
+    "fallback_heading": "Policy",
+    "fallback_body": "This page will show the store policy once it is published from Settings > Policies."
+  },
+  "trade": {
+    "kicker": "Trade program",
+    "form_heading": "Apply for trade access",
+    "studio": "Studio / company name",
+    "contact_person": "Contact person",
+    "email": "Email",
+    "phone": "Phone",
+    "city": "City",
+    "gstin": "GSTIN",
+    "volume": "Monthly order volume",
+    "volume_1": "Under ₹50,000",
+    "volume_2": "₹50,000 – ₹2,00,000",
+    "volume_3": "₹2,00,000 – ₹10,00,000",
+    "volume_4": "Above ₹10,00,000",
+    "message": "Tell us about your projects",
+    "send": "Send enquiry",
+    "success": "Thank you — our trade team will be in touch shortly."
+  },
+  "wishlist": {
+    "title": "Wishlist",
+    "open": "Open wishlist",
+    "close": "Close wishlist",
+    "add": "Add to wishlist",
+    "remove": "Remove from wishlist",
+    "empty_heading": "Your wishlist is empty",
+    "empty_text": "Save the pieces you love and they will wait for you here.",
+    "continue_shopping": "Continue exploring",
+    "move_to_cart": "Move to bag",
+    "remove_item": "Remove"
+  }
+}
