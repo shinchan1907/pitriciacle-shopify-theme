@@ -1,0 +1,14 @@
+{%- comment -%}
+  Wishlist toggle button — usage: {% render 'wishlist-button', product: product, class: 'optional-extra-class' %}
+  State (aria-pressed + .is-active) is synced by theme.js from localStorage (pt-wishlist).
+{%- endcomment -%}
+{%- if product != blank -%}
+  <button
+    type="button"
+    class="pt-icon-btn pt-wishlist-btn{% if class != blank %} {{ class }}{% endif %}"
+    data-wishlist-toggle="{{ product.handle }}"
+    aria-pressed="false"
+    aria-label="{{ 'wishlist.add' | t }}: {{ product.title | escape }}">
+    {% render 'icons', icon: 'heart' %}
+  </button>
+{%- endif -%}
